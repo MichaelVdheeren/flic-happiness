@@ -860,8 +860,8 @@ var FlicClient = function(host, port) {
 util.inherits(FlicClient, EventEmitter);
 
 module.exports = {
-	client: FlicClient,
-	connectionChannel: FlicConnectionChannel,
-	scanner: FlicScanner,
-	scanWizard: FlicScanWizard
+	Client: FlicClient,
+	ConnectionChannel: FlicConnectionChannel,
+	Scanner: FlicScanner,
+	ScanWizard: FlicScanWizard
 };
