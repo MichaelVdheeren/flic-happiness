@@ -4,30 +4,32 @@
  */
 var Flic = require("./flic");
 var zapier = require("./zapier");
-var ajax = require('ic-ajax');
+var request = require('request');
 var moment = require('moment');
 
 var FlicClient = Flic.Client;
 var FlicConnectionChannel = Flic.ConnectionChannel;
 
-var client = new FlicClient("localhost", 5551);
+var client = new FlicClient('192.168.0.199', 5551);
 
 function listenToButton(bdAddr) {
 	var cc = new FlicConnectionChannel(bdAddr);
 	client.addConnectionChannel(cc);
 	cc.on("buttonClickOrHold", function(clickType, wasQueued, timeDiff) {
-		console.log(bdAddr + " " + clickType + " " + (wasQueued ? "wasQueued" : "notQueued") + " " + timeDiff + " seconds ago");
+		// set the data
+		var data = {
+      button: bdAddr,
+			date: moment(new Date()).format("YYYY-MM-DD"),
+			hour: moment(new Date()).format("HH"),
+			minute: moment(new Date()).format("mm"),
+    };
 
-		if (clickType == 2) {
-			return ajax.request(zapier.hook, {
-        method: 'POST',
-        data: {
-          button: bdAddr,
-					date: moment(new Date(), "YYYY-MM-DD"),
-					time: moment(new Date(), "HH:mm"),
-        }
-      });
-		}
+		// call the webhook
+		request({
+	    url: zapier.hook,
+	    method: "POST",
+	    json: data
+		});
 	});
 	cc.on("connectionStatusChanged", function(connectionStatus, disconnectReason) {
 		console.log(bdAddr + " " + connectionStatus + (connectionStatus == "Disconnected" ? " " + disconnectReason : ""));
