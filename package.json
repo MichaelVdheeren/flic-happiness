@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ic-ajax": "^2.0.2",
+    "moment": "^2.19.1"
+  }
 }

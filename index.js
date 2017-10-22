@@ -2,9 +2,11 @@
  * This example program connects to already paired buttons and register event listeners on button events.
  * Run the newscanwizard.js program to add buttons.
  */
-
-
 var Flic = require("./flic");
+var zapier = require("./zapier");
+var ajax = require('ic-ajax');
+var moment = require('moment');
+
 var FlicClient = Flic.Client;
 var FlicConnectionChannel = Flic.ConnectionChannel;
 
@@ -13,8 +15,19 @@ var client = new FlicClient("localhost", 5551);
 function listenToButton(bdAddr) {
 	var cc = new FlicConnectionChannel(bdAddr);
 	client.addConnectionChannel(cc);
-	cc.on("buttonUpOrDown", function(clickType, wasQueued, timeDiff) {
+	cc.on("buttonClickOrHold", function(clickType, wasQueued, timeDiff) {
 		console.log(bdAddr + " " + clickType + " " + (wasQueued ? "wasQueued" : "notQueued") + " " + timeDiff + " seconds ago");
+
+		if (clickType == 2) {
+			return ajax.request(zapier.hook, {
+        method: 'POST',
+        data: {
+          button: bdAddr,
+					date: moment(new Date(), "YYYY-MM-DD"),
+					time: moment(new Date(), "HH:mm"),
+        }
+      });
+		}
 	});
 	cc.on("connectionStatusChanged", function(connectionStatus, disconnectReason) {
 		console.log(bdAddr + " " + connectionStatus + (connectionStatus == "Disconnected" ? " " + disconnectReason : ""));
