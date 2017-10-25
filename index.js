@@ -10,7 +10,7 @@ var moment = require('moment');
 var FlicClient = Flic.Client;
 var FlicConnectionChannel = Flic.ConnectionChannel;
 
-var client = new FlicClient('192.168.0.199', 5551);
+var client = new FlicClient('localhost', 5551);
 
 function listenToButton(bdAddr) {
 	var cc = new FlicConnectionChannel(bdAddr);
